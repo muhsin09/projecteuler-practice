@@ -1,11 +1,6 @@
 package mhsn.kata.euler50;
 
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.IntStream;
 
 /**
  * Longest Collatz sequence Problem 14
@@ -25,17 +20,24 @@ import java.util.stream.IntStream;
  */
 public class LongestCollatzSequence {
 
-  public static HashMap<Integer, Integer> sayiVeTermMap = new HashMap<Integer, Integer>();
+  public static HashMap<Long, Long> numbersAndTermsNumber = new HashMap<Long, Long>();
 
-  public static void main(String[] args)  {
+  public static void main(String[] args) {
 
-//    solutionEnis();
+    final long start = System.currentTimeMillis();
+
     simpleSolution();
+
+    final long middle = System.currentTimeMillis();
+
+    System.out.println(middle-start);
+    solutionEnis();
+
+    System.out.println(System.currentTimeMillis()-middle);
   }
 
   private static void simpleSolution() {
-    final int number = 1_000_000;
-
+    final int number = 19_000_000;
 
     // what happens when  use int instead of long
     long sequenceLength = 0;
@@ -61,42 +63,33 @@ public class LongestCollatzSequence {
     System.out.println(startingNumber);
   }
 
-  private static void solutionEnis()  {
-    for (int n = 2; n < 1_000_000; n++) {
+  private static void solutionEnis() {
+    for (int n = 2; n < 19_000_000; n++) {
       getTermCount(n);
     }
-    final Integer key = sayiVeTermMap.entrySet().stream().max((entry1, entry2) -> entry1.getValue() > entry2.getValue() ? 1 : -1).get()
+    final Long key = numbersAndTermsNumber.entrySet().stream().max((entry1, entry2) -> entry1.getValue() > entry2.getValue() ? 1 : -1).get()
         .getKey();
-    System.out.println("çözüm: " + key + " " + sayiVeTermMap.get(key));
-    System.out.println(sayiVeTermMap.size());
+    System.out.println("çözüm: " + key + " " + numbersAndTermsNumber.get(key));
+    System.out.println(numbersAndTermsNumber.size());
 
   }
 
 
+  private static long getTermCount(int k) {
+    long termCount = 1;
 
-  private static int getTermCount(int k)  {
-    int termCount = 1;
-
-
-    int n= k;
+    long n = k;
     while (n != 1) {
-      if (termCount > 1_000_000) {
-        System.out.println("----------  " + k );
-        break;
-      }
       n = f(n);
-      if (sayiVeTermMap.containsKey(n)){
-        termCount = sayiVeTermMap.get(n) +termCount;
+      if (numbersAndTermsNumber.containsKey(n)) {
+        termCount = numbersAndTermsNumber.get(n) + termCount;
         break;
       }
 
       termCount++;
     }
-    if (!sayiVeTermMap.containsKey(k) && termCount<2_000_000_000) {
 
-      sayiVeTermMap.put(k, termCount);
-//      System.out.println(k + " sayisi mape eklendi. term count: " + termCount);
-    }
+    numbersAndTermsNumber.put(Long.valueOf(k), termCount);
 
     return termCount;
   }
@@ -109,7 +102,7 @@ public class LongestCollatzSequence {
     if (n == 1) {
       newN = 1;
     } else if (n % 2 == 0) {
-      newN = n/2;
+      newN = n / 2;
     } else {
       newN = 3 * n + 1;
     }
